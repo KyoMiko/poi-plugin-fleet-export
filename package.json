@@ -1,6 +1,6 @@
 {
     "name": "poi-plugin-fleet-export",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "main": "main.js",
     "description": "a plugin export fleet to noro6 or jervis",
     "author": {
@@ -9,7 +9,7 @@
     },
     "repository": {
         "type": "git",
-        "url": ""
+        "url": "https://github.com/KyoMiko/poi-plugin-fleet-export"
     },
     "keywords": ["poi","kancolle","poi-plugin","fleetExport"],
     "license": "MIT",
