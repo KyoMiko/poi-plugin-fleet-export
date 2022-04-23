@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import { Button, TextArea } from "@blueprintjs/core";
+import { Button, TextArea, ButtonGroup, Icon } from "@blueprintjs/core";
 import { connect } from 'react-redux'
 import { shell } from 'electron'
 export const windowMode = false;
 export const reactClass = connect(state => ({
+    hqlv: state.info.basic.api_level,
     fleets: state.info.fleets,
     ships: state.info.ships,
     equips: state.info.equips,
@@ -22,7 +23,7 @@ export const reactClass = connect(state => ({
         //读取陆航信息
         const airbases = this.props.airbases;
         //初始化字符串
-        let result = `{"version": 4,`;
+        let result = `{"version": 4,"hqlv":${this.props.hqlv},`;
 
         //遍历母港中的舰队并且生成json
         for (let i = 0; i < fleets.length; i++) {
@@ -109,30 +110,37 @@ export const reactClass = connect(state => ({
 
     exportNoro6 = () => {
         const result = this.exportFleet()
-        shell.openExternal(`https://noro6.github.io/kcTools/simulator/?predeck=${encodeURIComponent(result)}`)
+        shell.openExternal(`https://noro6.github.io/kc-web/?predeck=${result}`)
     }
+
 
     exportJervis = () => {
         const result = this.exportFleet()
-        shell.openExternal(`https://jervis.vercel.app/zh-CN/?predeck=${encodeURIComponent(result)}`)
+        shell.openExternal(`https://jervis.vercel.app/zh-CN/?predeck=${result}`)
+    }
+
+    help = () => {
+        shell.openExternal(`https://github.com/KyoMiko/poi-plugin-fleet-export`)
     }
 
     render() {
         const result = this.state.result;
         return (
             <div>
-                <Button onClick={this.exportNoro6}>
-                    导出至noro6
-                </Button>
-                <Button onClick={this.exportJervis}>
-                    导出至jervis
-                </Button>
-                <Button onClick={this.exportFleet}>
-                    刷新舰队导出文本
-                </Button>
-                <br></br>
+                <ButtonGroup>
+                    <Button onClick={this.exportNoro6}>
+                        导出至noro6
+                    </Button>
+                    <Button onClick={this.exportJervis}>
+                        导出至jervis
+                    </Button>
+                    <Button onClick={this.exportFleet}>
+                        刷新舰队导出文本
+                    </Button>
+                </ButtonGroup>
                 <h2>舰队导出文本</h2>
-                <TextArea style={{ width: "100%", height: "100px" }} className=":readonly" value={result} ></TextArea>
+                <TextArea style={{ height: "100px" }} placeholder="点击任意按钮加载" className=":readonly" fill={true} value={result} ></TextArea>
+                <Button icon="help" minimal="true" onClick={this.help} title="使用帮助" />
             </div>
         )
     }
