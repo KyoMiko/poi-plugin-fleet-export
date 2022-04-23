@@ -4,8 +4,8 @@
     "main": "main.js",
     "description": "a plugin export fleet to noro6 or jervis",
     "author": {
-        "name": "jiangjun",
-        "url": "https://github.com/jj19971130"
+        "name": "KyoMiko",
+        "url": "https://github.com/KyoMiko"
     },
     "poiPlugin": {
         "title": "Fleet Export",

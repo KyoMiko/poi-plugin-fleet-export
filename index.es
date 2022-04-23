@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, TextArea } from "@blueprintjs/core";
 import { connect } from 'react-redux'
+import { shell } from 'electron'
 export const windowMode = false;
-export const render = {}
 export const reactClass = connect(state => ({
     fleets: state.info.fleets,
     ships: state.info.ships,
@@ -74,13 +74,13 @@ export const reactClass = connect(state => ({
         //遍历陆航中的航空中队
         for (let i = 0; i < airbases.length; i++) {
             const airbase = airbases[i];
-            result += `"a${i+1}":{"items": {`;
+            result += `"a${i + 1}":{"items": {`;
             //遍历航空中队中的飞机
             for (let j = 0; j < airbase.api_plane_info.length; j++) {
                 const plane = airbase.api_plane_info[j];
                 if (equips[plane.api_slotid]) {
                     const equip = equips[plane.api_slotid]
-                    result += `"i${j+1}":{"id":${equip.api_slotitem_id},"rf":${equip.api_level}`
+                    result += `"i${j + 1}":{"id":${equip.api_slotitem_id},"rf":${equip.api_level}`
                     if (equip.api_alv) {
                         result += `,"mas":${equip.api_alv}`
                     }
@@ -104,17 +104,35 @@ export const reactClass = connect(state => ({
         }
         //更新result
         this.setState({ result })
+        return result;
+    }
+
+    exportNoro6 = () => {
+        const result = this.exportFleet()
+        shell.openExternal(`https://noro6.github.io/kcTools/simulator/?predeck=${encodeURIComponent(result)}`)
+    }
+
+    exportJervis = () => {
+        const result = this.exportFleet()
+        shell.openExternal(`https://jervis.vercel.app/zh-CN/?predeck=${encodeURIComponent(result)}`)
     }
 
     render() {
         const result = this.state.result;
         return (
             <div>
-                <Button onClick={this.exportFleet}>
-                    export fleet
+                <Button onClick={this.exportNoro6}>
+                    导出至noro6
                 </Button>
-                <input type="text" value={result}>
-                </input>
+                <Button onClick={this.exportJervis}>
+                    导出至jervis
+                </Button>
+                <Button onClick={this.exportFleet}>
+                    刷新舰队导出文本
+                </Button>
+                <br></br>
+                <h2>舰队导出文本</h2>
+                <TextArea style={{ width: "100%", height: "100px" }} className=":readonly" value={result} ></TextArea>
             </div>
         )
     }
