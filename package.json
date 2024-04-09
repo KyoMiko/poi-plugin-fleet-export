@@ -1,6 +1,6 @@
 {
     "name": "poi-plugin-fleet-export",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "main": "main.js",
     "description": "a plugin export fleet to noro6 or jervis",
     "author": {
