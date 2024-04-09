@@ -10,8 +10,12 @@ export const reactClass = connect(state => ({
     equips: state.info.equips,
     airbases: state.info.airbase
 }))(class view extends Component {
+    constructor(props) {
+        super(props);
+        this.handleActivityAirbaseChange = this.handleActivityAirbaseChange.bind(this);
+    }
 
-    state = { result: "" };
+    state = { result: "", activityAirbaseOnly: true };
 
     exportFleet = () => {
         //读取舰队信息
@@ -73,9 +77,13 @@ export const reactClass = connect(state => ({
             }
         }
         //遍历陆航中的航空中队
+        let airbase_cnt = 0;
+        console.log(this.state.activityAirbaseOnly);
         for (let i = 0; i < airbases.length; i++) {
             const airbase = airbases[i];
-            result += `"a${i + 1}":{"items": {`;
+            if (this.state.activityAirbaseOnly && airbase.api_area_id < 30) continue;
+            airbase_cnt += 1;
+            result += `"a${airbase_cnt}":{"items": {`;
             //遍历航空中队中的飞机
             for (let j = 0; j < airbase.api_plane_info.length; j++) {
                 const plane = airbase.api_plane_info[j];
@@ -122,11 +130,16 @@ export const reactClass = connect(state => ({
     help = () => {
         shell.openExternal(`https://github.com/KyoMiko/poi-plugin-fleet-export`)
     }
+    
+    handleActivityAirbaseChange = (event) => {
+        const value = event.target.checked;
+        this.setState({activityAirbaseOnly: value});
+    }
 
     render() {
         const result = this.state.result;
         return (
-            <div>
+            <div style={{ marginLeft: "10px" }}>
                 <ButtonGroup>
                     <Button onClick={this.exportNoro6}>
                         导出至noro6
@@ -138,6 +151,8 @@ export const reactClass = connect(state => ({
                         刷新舰队导出文本
                     </Button>
                 </ButtonGroup>
+                <label style={{ marginLeft: "10px" }}><input type="checkbox" checked={this.state.activityAirbaseOnly} onChange={this.handleActivityAirbaseChange} />输出限定海域基地航空队</label>
+                
                 <h2>舰队导出文本</h2>
                 <TextArea style={{ height: "100px" }} placeholder="点击任意按钮加载" className=":readonly" fill={true} value={result} ></TextArea>
                 <Button icon="help" minimal="true" onClick={this.help} title="使用帮助" />
